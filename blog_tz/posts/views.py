@@ -30,7 +30,7 @@ class MainTestView(ListView):
 		context['user'] = self.request.user
 		try:
 			profile = Subscriber.objects.get(user = self.request.user)
-			context['profile'] = profile
+			context['subscriber'] = profile
 			if profile.city == '':
 				context['need_data'] = True
 			else:

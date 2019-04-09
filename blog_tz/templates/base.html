@@ -51,7 +51,9 @@
 		<div class = 'd-inline'>
             {% if user.is_authenticated or user.is_active %}
                 <a class="btn btn-success" href="{% url 'posts:post-create' %}">Create Post</a>
-                <a class="btn btn-primary" href="{% url 'users:profile' user.pk %}">Hi, {{request.user}}!!!</a>
+                <a class="btn btn-primary" href="{% url 'users:profile' user.pk %}">
+                    <img class="rounded-circle profile-logo" src = '{{ subscriber.image.url }}' style = 'width: 30px; height: 30px;'>
+                    Hi, {{request.user}}!!!</a>
 				<a class="btn btn-primary" href="{% url 'users:logout-view' %}">Logout</a>
             {% else %}
 				<a class="btn btn-primary" href="{% url 'users:login-view' %}">Sign In</a>
