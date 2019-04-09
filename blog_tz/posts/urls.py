@@ -15,5 +15,5 @@ urlpatterns = [
     path('post/delete/<int:pk>', BookDeleteView.as_view(), name = 'post-delete'),
 
     path('search', SearchView.as_view(), name = 'search-view'),
-    path('user_reaction/', UserReactionView.as_view(), name = 'user_reaction'),
+    path('user_reaction/', UserReactionView.as_view(), name = 'user_reaction')
 ]

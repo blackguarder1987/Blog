@@ -27,7 +27,9 @@ class Post(models.Model):
     image = models.ImageField(default = 'default-post.png', upload_to=save_image_path, blank=True)
 
     likes = models.PositiveIntegerField(default=0)
-    user_reaction = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name = 'user_reaction')
+    dislikes = models.PositiveIntegerField(default=0)
+    user_reaction_likes = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name = 'user_reaction_likes')
+    user_reaction_dislikes = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='user_reaction_dislikes')
 
 
     class Meta:

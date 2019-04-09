@@ -75,6 +75,8 @@ class PostDetailView(FormMixin, DetailView):
 		page_number = self.request.GET.get('page', 1)
 		page = p.get_page(page_number)
 		context['comments'] = page
+
+		context['subscriber'] = Subscriber.objects.get(user=self.request.user)
 		return context
 
 
@@ -176,17 +178,44 @@ class UserReactionView(View):
 		article_id = self.request.GET.get('article_id')
 		post = Post.objects.get(id = article_id)
 		like = self.request.GET.get('like')
+		dislike = self.request.GET.get('dislike')
 
-		if like and request.user not in post.user_reaction.all():
-			post.likes +=1
-			post.user_reaction.add(request.user)
-			post.save()
-		elif like and request.user in post.user_reaction.all():
-			post.likes -= 1
-			post.user_reaction.remove(request.user)
-			post.save()
+		if like and (request.user not in post.user_reaction_likes.all()):
+			if request.user in post.user_reaction_dislikes.all():
+				pass
+			else:
+				post.likes += 1
+				post.user_reaction_likes.add(request.user)
+				post.save()
+		elif like and (request.user in post.user_reaction_likes.all()):
+			if request.user in post.user_reaction_dislikes.all():
+				pass
+			else:
+				post.likes -= 1
+				post.user_reaction_likes.remove(request.user)
+				post.save()
+
+
+		if dislike and (request.user not in post.user_reaction_dislikes.all()):
+			if request.user in post.user_reaction_likes.all():
+				pass
+			else:
+				post.dislikes += 1
+				post.user_reaction_dislikes.add(request.user)
+				post.save()
+		elif dislike and (request.user in post.user_reaction_dislikes.all()):
+			if request.user in post.user_reaction_likes.all():
+				pass
+			else:
+				post.dislikes -= 1
+				post.user_reaction_dislikes.remove(request.user)
+				post.save()
+
+
 
 		data = {
-			'likes': post.likes
+			'likes': post.likes,
+			'dislikes': post.dislikes
 		}
 		return JsonResponse(data)
+

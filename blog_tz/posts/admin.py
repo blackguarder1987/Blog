@@ -3,6 +3,7 @@ from .models import Post, Comments
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'author',)
+    list_display_links = ('title', )
     search_fields = ['author', 'title']
     list_filter = ('date_posted',)
     date_hierarchy = ('date_posted')
