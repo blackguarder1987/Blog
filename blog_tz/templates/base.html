@@ -1,0 +1,94 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Font awesome CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+
+    <title>
+        {% block title %}
+            Blog
+        {% endblock %}
+    </title>
+
+
+
+</head>
+
+<body>
+
+
+<header class="site-header">
+	<nav class="navbar navbar-dark bg-primary">
+		<a class="navbar-brand" href="{% url 'posts:base-view' %}">Posts</a>
+
+
+		<!-- Search button -->
+	      <form class="form-inline my-2 my-lg-0" method = 'GET' action = "{% url 'posts:search-view' %}">
+	        <div class="form-group mr-2">
+	          <input type="text" class="form-control float-right search-form" placeholder="Search by title or content" name = 'q' >
+	        </div>
+	        <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+	      </form>
+
+
+		<div class = 'd-inline'>
+            {% if user.is_authenticated or user.is_active %}
+                <a class="btn btn-success" href="{% url 'posts:post-create' %}">Create Post</a>
+                <a class="btn btn-primary" href="{% url 'users:profile' user.pk %}">Hi, {{request.user}}!!!</a>
+				<a class="btn btn-primary" href="{% url 'users:logout-view' %}">Logout</a>
+            {% else %}
+				<a class="btn btn-primary" href="{% url 'users:login-view' %}">Sign In</a>
+                <a class="btn btn-primary" href="{% url 'users:signup' %}">Sign Up</a>
+            {% endif %}
+		</div>
+
+	</nav>
+</header>
+
+
+{% if messages %}
+    {% for message in messages %}
+		<div class = 'alert alert-{{ message.tags }}'>
+			<b>{{ message }}</b>
+		</div>
+	{% endfor %}
+{% endif %}
+
+
+{% block content %}
+{% endblock %}
+
+
+      <script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
+      <script src="{% static 'assets/js/popper.min.js' %}"></script>
+      <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+
+
+      <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+      <!-- You can alternatively load the minified version -->
+      <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+
+
+{% block scripts %}
+{% endblock %}
+
+</body>
+
+</html>

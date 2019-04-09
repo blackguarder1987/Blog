@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+    <div class = 'container mt-5'>
+	<div class = 'content-section'>
+		<form method = 'POST' action="" enctype="multipart/form-data">
+			{% csrf_token %}
+			<fieldset class = 'form-group'>
+				<legend class = 'border-bottom mb-4'>Blog Post</legend>
+
+				{{ form|crispy }}
+			</fieldset>
+
+			<div class = 'form-group'>
+				<button class = 'btn btn-outline-info' type = 'Submit'>Post</button>
+				<a href="javascript:window.history.back()" id="cancel" name="cancel" class="btn btn-danger">Cancel</a>
+			</div>
+		</form>
+
+	</div>
+    </div>
+{% endblock %}

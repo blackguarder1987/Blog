@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% if title.exists %}
+	{% block title %}
+		{{ post.title }} - {{ block.super }}
+	{% endblock %}
+{% endif %}
+
+
+
+{% block content %}
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
+
+<!--MAIN  CONTENT HERE-->
+
+<div class="container mt-5 mb-5">
+    <h3 class ='text-center'>{{ post.title }}</h3>
+    <hr>
+    <div class = 'clearfix'>
+        <img src="{{ post.image.url }}" style="width:60%" class = 'float-right'>
+        <small class="pl-5"><i>Added by {{ post.author }} on {{ post.date_posted }}</i></small>
+        {{ post.content|safe|linebreaks }}
+
+        {% if user == post.author %}
+            <div class = 'float-right mr-2'>
+                <a href="{% url 'posts:post-update' post.slug %}" class = 'btn btn-success'>Update New Post</a>
+                <button type="button" class="post-delete btn btn-danger" data-id="{% url 'posts:post-delete' post.pk %}">Delete Post</button>
+            </div>
+        {% endif %}
+
+    </div>
+
+
+    <hr>
+
+
+	<h4>Понравилась статья?</h4>
+	    <a href="#" id = 'like'><i class="fas fa-thumbs-up fa-lg" style="color:green;"><span id = 'liked' class = 'ml-2'>{{ post.likes }}</span></i></a>
+	<hr>
+
+
+
+<!--  COMMENTS HER  -->
+        <h4 class="add-comment">Do you want to left a comment? (CLICK ME)</h4>
+		{% if user.is_active %}
+		<div class = 'comment-form' style = 'display:none;'>
+			<form action = '' method = 'POST'>
+				<input type="hidden" id="article" data-id = '{{ post.id }}'>
+					{% csrf_token %}
+					{{ form|crispy }}
+				<input type = 'submit' value = 'Add Comment' id = 'add_comment' data-toggle="modal" data-target=".bs-example-modal-sm">
+			</form>
+            <hr>
+		</div>
+		{% else %}
+		<p>Must Log In to add comment</p>
+		{% endif %}
+
+        <br><br>
+        <h4 class = 'text-center'>It was left {{ comments_c.count }} Comment{{ comments_c|pluralize }} by users. </h4>
+        <hr>
+
+        {% for comment in comments %}
+            <div class ='row mb-2 ml-1'>
+            <div class = 'col-sm-12' >
+                {% for face in profile %} {% if face.user == comment.user %}
+                    <img src = '{{ face.image.url }}'  class = 'float-left comment-pict'>
+                {% endif %}{% endfor %}
+                <div class =' float-left ml-3' style = 'width:85%;'>
+                    <h5>Added by {{ comment.user.username }} ({{ comment.timestamp|date:'m:H F d, Y' }}):</h5>
+                    <hr>
+                    <p>{{ comment.content }}</p>
+                </div>
+
+            </div>
+            </div>
+
+        {% endfor %}
+
+        <hr>
+
+			<!-- Pagination -->
+			<div style = 'margin-left: 45%;'>
+
+                {% if comments.has_other_pages %}
+				{% if comments.has_previous %}
+					<a href="?page=1" class = 'btn btn-outline-primary mb-4'>First</a>
+					<a href="?page={{ comments.previous_page_number }}" class = 'btn btn-outline-primary mb-4'>Previous</a>
+				{% endif %}
+
+				{% for num in comments.paginator.page_range %}
+					{% if comments.number == num %}
+						<a href="?page={{ num }}" class = 'btn btn-primary mb-4'>{{ num }}</a>
+					{% elif num > comments.number|add:'-3' and num < comments.number|add:'3' %}
+						<a href="?page={{ num }}" class = 'btn btn-ouline-primary mb-4'>{{ num }}</a>
+					{% endif %}
+				{% endfor %}
+
+				{% if comments.has_next %}
+					<a href="?page={{ comments.next_page_number }}" class = 'btn btn-outline-primary mb-4'>Next</a>
+					<a href="?page={{ comments.paginator.num_pages }}" class = 'btn btn-outline-primary mb-4'>Last</a>
+				{% endif %}
+                {% endif %}
+            </div>
+
+
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+  <script type="text/javascript">
+    $(function () {
+
+      // Delete post buttons
+      $(".post-delete").each(function () {
+        $(this).modalForm({formURL: $(this).data('id')});
+      });
+
+    });
+  </script>
+
+<script>
+	$(document).ready(function(){
+		$('.add-comment').click(function() {
+			$('.comment-form').fadeToggle();
+		});
+	})
+</script>
+
+
+
+
+<!-- LIKE / DISLIKE -->
+<script >
+	$(document).ready(function(){
+		$('#like').on('click', function(e) {
+			e.preventDefault()
+			var like = 'like'
+			var article_id = $('#article').attr('data-id')
+			data = {
+				article_id:article_id,
+				like: like
+			}
+			$.ajax({
+				type:'GET',
+				url: '{% url "posts:user_reaction" %}',
+				dataType: 'json',
+				data: data,
+				success: function(data){
+					$('#liked').html(data.likes)
+				}
+			})
+		})
+	})
+</script>
+
+
+{% endblock %}

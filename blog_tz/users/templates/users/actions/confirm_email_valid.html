@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+	Confirm email - {{ block.super }}
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container mt-5">
+	<h3 class = 'text-center'>Thank you for your email confirmation. Now you can <a href="{% url 'users:login-view' %}">LOG IN</a> </h3>
+</div>
+
+
+{% endblock %}

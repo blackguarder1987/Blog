@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	User Info - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+
+
+	<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content"></div>
+	  </div>
+	</div>
+
+
+
+	<div class="container mt-5">
+		<div class="content-section">
+			<div class="media">
+				<img class="rounded-circle  account-img" src="{{ subscriber.image.url }}">
+				<b class="media-body ml-3">
+					<div >
+						<h2 class="text-primary text-center account-heading">{{ subscriber }}</h2>
+					</div>
+					<hr>
+
+					{% if subscriber.user == request.user %}
+						<p class="text-secondary">{{ subscriber.user.email }}</p>
+					{% endif %}
+					<b>City:</b> {{ subscriber.city }}<br>
+					<b>Counry:</b> {{ subscriber.country }}<br>
+					<b>Birthday:</b> {{ subscriber.birthday }}
+
+
+					<div class = 'mt-5 float-right'>
+						<button href="" class = 'update-prof btn btn-success' data-id="{% url 'users:update-prof' subscriber.pk %}" >Upgrade General Information</button>
+						<button href="" class = 'update-pers-prof btn btn-warning' data-id="{% url 'users:update-prof-pers' user.pk %}" >Upgrade Personal Data</button>
+						<button href="" class = 'delete-profile btn btn-danger' data-id="{% url 'users:delete-profile' user.pk %}" >Delete Profile</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+
+{% block scripts %}
+
+  <script type="text/javascript">
+    $(function () {
+
+      // Update profile buttons
+      $(".update-prof").each(function () {
+        $(this).modalForm({formURL: $(this).data('id')});
+      });
+
+      // Update personal data profile buttons
+      $(".update-pers-prof").each(function () {
+        $(this).modalForm({formURL: $(this).data('id')});
+      });
+
+      // Delete profile buttons
+      $(".delete-profile").each(function () {
+        $(this).modalForm({formURL: $(this).data('id')});
+      })
+
+    });
+  </script>
+
+{% endblock %}
